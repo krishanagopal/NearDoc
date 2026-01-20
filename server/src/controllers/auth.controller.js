@@ -1,6 +1,7 @@
 const User = require("../models/User.js");
+const generateToken = require("../utils/generateToken");
 
-
+// register user api cntrller
 const registerUser = async (req, res) => {
   try {
     const {
@@ -57,6 +58,58 @@ const registerUser = async (req, res) => {
 };
 
 
+//login user api controller
+
+const loginUser= async(req,res)=>{
+  try{
+    const{email,password}=req.body;
+
+    //validationfor req field
+
+    if(!email || !password){
+      return res.status(400).json({
+        message:"please provide all reqired credentials",
+      });
+    }
+
+    //check for the existing user in the database
+
+    const user =await User.findOne({email}).select("+password");
+    if(!user){
+      return res.status(400).json({
+        message:"invalid email or wrong password",
+      });
+    }
+
+    //verify password
+
+    const isMatch= await user.comparePassword(password);
+
+    if(!isMatch){
+      return res.status(400).json({
+        message:"invalid email or password",
+
+      });
+    }
+
+
+    const token = generateToken(user._id);
+    //login successful
+    res.status(200).json({
+      message:"login successful",
+      token,
+
+    });
+
+  }catch(error){
+    res.status(500).json({
+      message:"something went wrong",
+    });
+  }
+};
+
+
 module.exports = {
   registerUser,
+  loginUser,
 };
