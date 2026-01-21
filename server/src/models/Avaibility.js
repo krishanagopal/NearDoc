@@ -1,0 +1,29 @@
+const mongoose = require("mongoose");
+
+const availabilitySchema = new mongoose.Schema(
+  {
+    doctor: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    date: {
+      type: Date,
+      required: true,
+    },
+    slots: [
+      {
+        type: String,
+      },
+    ],
+    isHoliday: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
+
+module.exports = mongoose.model("Availability", availabilitySchema);
