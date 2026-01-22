@@ -8,5 +8,16 @@ const doctorOnly =(req,res,next)=>{
     });
 };
 
+const patientOnly = (req, res, next) => {
+  if (req.user && req.user.role === "patient") {
+    return next();
+  }
 
-module.exports ={ doctorOnly};
+  return res.status(403).json({
+    message: "Access denied. Patient only.",
+  });
+};
+
+
+
+module.exports ={ doctorOnly, patientOnly};

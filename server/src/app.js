@@ -1,7 +1,7 @@
 const express = require("express");
 const authRoutes = require("./routes/auth.routes");
 const availabilityRoutes =require("./routes/availability.routes");
-
+const appointmentRoutes = require("./routes/appointment.routes");
 
 
 const app = express();
@@ -14,6 +14,9 @@ app.use("/api/auth", authRoutes);
 // Availability routes
 app.use("/api/availability", availabilityRoutes);
 
+
+// Appointment routes
+app.use("/api/appointments", appointmentRoutes);
 
 // Temporary health check route
 app.get("/health", (req, res) => {
