@@ -92,17 +92,25 @@ const getMyAppointments = async (req, res) => {
     });
   }
 };
+
 const getDoctorAppointments = async (req, res) => {
   try {
-    res.status(200).json({
-      message: "Get doctor appointments placeholder",
+    const appointments = await Appointment.find({
+      doctor: req.user._id,
+    })
+      .populate("patient", "name city")
+      .sort({ date: 1, timeSlot: 1 });
+
+    return res.status(200).json({
+      appointments,
     });
   } catch (error) {
-    res.status(500).json({
+    return res.status(500).json({
       message: "Something went wrong",
     });
   }
 };
+
 
 
 module.exports = {
