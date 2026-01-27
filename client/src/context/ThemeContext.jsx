@@ -5,24 +5,24 @@ const ThemeContext = createContext();
 export const ThemeProvider = ({ children }) => {
   const [theme, setTheme] = useState("light");
 
-  // Load theme from localStorage
+  // Apply theme to <html>
   useEffect(() => {
-    const savedTheme = localStorage.getItem("theme");
-    if (savedTheme) {
-      setTheme(savedTheme);
-      document.documentElement.classList.toggle(
-        "dark",
-        savedTheme === "dark"
-      );
+    if (theme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
     }
+    localStorage.setItem("theme", theme);
+  }, [theme]);
+
+  // Load saved theme
+  useEffect(() => {
+    const saved = localStorage.getItem("theme");
+    if (saved === "dark") setTheme("dark");
   }, []);
 
-  // Toggle theme
   const toggleTheme = () => {
-    const newTheme = theme === "light" ? "dark" : "light";
-    setTheme(newTheme);
-    localStorage.setItem("theme", newTheme);
-    document.documentElement.classList.toggle("dark", newTheme === "dark");
+    setTheme((prev) => (prev === "light" ? "dark" : "light"));
   };
 
   return (
@@ -32,5 +32,4 @@ export const ThemeProvider = ({ children }) => {
   );
 };
 
-// Custom hook (easy usage)
 export const useTheme = () => useContext(ThemeContext);

@@ -1,79 +1,83 @@
-import {useState} from "react";
-
+import { useState } from "react";
 import api from "../../api/axios";
 
-const Login=()=>{
-    const [email,setEmail]=useState("");
-    const [password,setPassword]=useState("");  
-    const [loading,setLoading]=useState(false);
-    const [error,setError]=useState("");
+const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
 
-    const handleLogin =async (e)=>{
-      e.preventDefault();
-      setError("");
-      setLoading(true);
+    try {
+      const res = await api.post("/auth/login", { email, password });
+      localStorage.setItem("token", res.data.token);
+      alert("Login successful");
+    } catch (err) {
+      setError(err.response?.data?.message || "Login failed");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-      try{
-        const response =await api.post("/auth/login",{
-          email,password
-        });
-        //save token
-        localStorage.setItem("token",response.data.token);
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-white dark:bg-gray-900">
+      <div className="w-full max-w-md bg-white dark:bg-gray-800 
+                      rounded-xl shadow-lg p-6 mt-8">
+        <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+          Log in
+        </h2>
 
-        console.log("Login successful:", response.data.token);
-        alert("Login successful!");
+        <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
+          Enter your email and password to continue
+        </p>
 
-      }catch(err){
-        console.error("Login error:", err);
-        setError(
-          err.response?.data?.message ||"Login failed"
-        );
+        {error && (
+          <p className="text-sm text-red-600 mb-4">{error}</p>
+        )}
 
+        <form onSubmit={handleLogin} className="space-y-4">
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            className="auth-input"
+          />
 
-      }finally{
-        setLoading(false);
-      }
-    };
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            className="auth-input"
+          />
 
-    return(
-      <div className="max-w-md mx-auto mt-10 p-6 border rounded">
-      <h2 className="text-2xl font-bold mb-4">Login</h2>
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-blue-600 hover:bg-blue-700
+                       text-white py-2 rounded-md disabled:opacity-50"
+          >
+            {loading ? "Logging in..." : "Continue"}
+          </button>
+        </form>
 
-      {error && (
-        <p className="text-red-600 mb-3">{error}</p>
-      )}
-
-      <form onSubmit={handleLogin}>
-        <input
-          type="email"
-          placeholder="Email"
-          className="w-full mb-3 p-2 border rounded"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-
-        <input
-          type="password"
-          placeholder="Password"
-          className="w-full mb-3 p-2 border rounded"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-blue-600 text-white py-2 rounded disabled:opacity-50"
-        >
-          {loading ? "Logging in..." : "Login"}
-        </button>
-      </form>
+        <p className="text-sm text-center text-gray-600 dark:text-gray-400 mt-6">
+          New here?{" "}
+          <a href="/register" className="text-blue-600 hover:underline">
+            Create an account
+          </a>
+        </p>
+      </div>
     </div>
-    )
-
+  );
 };
 
 export default Login;
+
