@@ -1,53 +1,63 @@
-import {BrowserRouter,Routes,Route} from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import ProtectedRoute from "./auth/ProtectedRoute";
 
-// Layouts
-import PublicLayout from "./Layouts/PublicLayout";
-import PatientLayout from "./Layouts/PatientLayout";
-import DoctorLayout from "./Layouts/DoctorLayout";
+// layouts
+import PublicLayout from "./layouts/PublicLayout";
+import PatientLayout from "./layouts/PatientLayout";
+import DoctorLayout from "./layouts/DoctorLayout";
 
-// Public pages
-import Landing from "./Pages/public/Landing";
-import Login from "./Pages/public/Login";
-import Register from "./Pages/public/Register";
+// pages
+import Landing from "./pages/public/Landing";
+import Login from "./pages/public/Login";
+import Register from "./pages/public/Register";
+import DoctorList from "./pages/patient/DoctorList";
+import MyAppointments from "./pages/patient/MyAppointments";
+import CreateAvailability from "./pages/doctor/CreateAvailability";
+import DoctorAppointments from "./pages/doctor/DoctorAppointments";
 
-// Patient pages
-import DoctorList from "./Pages/patient/DoctorList";
-import MyAppointments from "./Pages/patient/MyAppointments";
-
-// Doctor pages
-import CreateAvailability from "./Pages/doctor/CreateAvailability";
-import DoctorAppointments from "./Pages/doctor/DoctorAppointments";
-
-
-
-
-function App () {
-  return(
-     <BrowserRouter>
+const App = () => {
+  return (
+    <BrowserRouter>
       <Routes>
-
-        {/* Public Routes */}
+        {/* Public */}
         <Route element={<PublicLayout />}>
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
         </Route>
 
-        {/* Patient Routes */}
-        <Route element={<PatientLayout />}>
+        {/* Patient protected */}
+        <Route
+          element={
+            <ProtectedRoute allowedRoles={["patient"]}>
+              <PatientLayout />
+            </ProtectedRoute>
+          }
+        >
           <Route path="/patient/doctors" element={<DoctorList />} />
           <Route path="/patient/appointments" element={<MyAppointments />} />
         </Route>
 
-        {/* Doctor Routes */}
-        <Route element={<DoctorLayout />}>
-          <Route path="/doctor/availability" element={<CreateAvailability />} />
-          <Route path="/doctor/appointments" element={<DoctorAppointments />} />
+        {/* Doctor protected */}
+        <Route
+          element={
+            <ProtectedRoute allowedRoles={["doctor"]}>
+              <DoctorLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route
+            path="/doctor/availability"
+            element={<CreateAvailability />}
+          />
+          <Route
+            path="/doctor/appointments"
+            element={<DoctorAppointments />}
+          />
         </Route>
-
       </Routes>
     </BrowserRouter>
-  )
-}
+  );
+};
 
 export default App;

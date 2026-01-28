@@ -3,6 +3,7 @@ const authRoutes = require("./routes/auth.routes");
 const availabilityRoutes =require("./routes/availability.routes");
 const appointmentRoutes = require("./routes/appointment.routes");
 const cors= require ("cors");
+const doctorRoutes = require("./routes/doctor.routes");
 
 const app = express();
 
@@ -17,6 +18,9 @@ app.use(
 );
 
 app.use("/api/auth", authRoutes);
+
+// Doctor routes
+app.use("/api/doctors", doctorRoutes);
 
 // Availability routes
 app.use("/api/availability", availabilityRoutes);
