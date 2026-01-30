@@ -14,6 +14,7 @@ import DoctorList from "./pages/patient/DoctorList";
 import MyAppointments from "./pages/patient/MyAppointments";
 import CreateAvailability from "./pages/doctor/CreateAvailability";
 import DoctorAppointments from "./pages/doctor/DoctorAppointments";
+import DoctorAvailability from "./Pages/patient/DoctorAvailability";
 
 const App = () => {
   return (
@@ -34,6 +35,7 @@ const App = () => {
             </ProtectedRoute>
           }
         >
+          <Route path="/patient/doctor/:doctorId" element={<DoctorAvailability />} />
           <Route path="/patient/doctors" element={<DoctorList />} />
           <Route path="/patient/appointments" element={<MyAppointments />} />
         </Route>

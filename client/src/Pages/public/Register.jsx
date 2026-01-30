@@ -1,8 +1,13 @@
 
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../../api/axios";
+import { useAuth } from "../../context/AuthContext";
 
 const Register = () => {
+  const navigate = useNavigate();
+  const { login } = useAuth();
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -18,7 +23,10 @@ const Register = () => {
   const [error, setError] = useState("");
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
   };
 
   const handleRegister = async (e) => {
@@ -27,7 +35,8 @@ const Register = () => {
     setLoading(true);
 
     try {
-      const payload = {
+      // 1️⃣ Register user
+      await api.post("/auth/register", {
         name: `${formData.firstName} ${formData.lastName}`,
         email: formData.email,
         password: formData.password,
@@ -35,13 +44,30 @@ const Register = () => {
         city: formData.city,
         pincode: formData.pincode,
         specialization:
-          formData.role === "doctor" ? formData.specialization : undefined,
-      };
+          formData.role === "doctor"
+            ? formData.specialization
+            : undefined,
+      });
 
-      await api.post("/auth/register", payload);
-      alert("Registration successful. Please login.");
+      // 2️⃣ Login immediately
+      const loginRes = await api.post("/auth/login", {
+        email: formData.email,
+        password: formData.password,
+      });
+
+      // 3️⃣ Update AuthContext
+      await login(loginRes.data.token);
+
+      // 4️⃣ Redirect based on role
+      if (formData.role === "patient") {
+        navigate("/patient/doctors");
+      } else {
+        navigate("/doctor/availability");
+      }
     } catch (err) {
-      setError(err.response?.data?.message || "Registration failed");
+      setError(
+        err.response?.data?.message || "Registration failed"
+      );
     } finally {
       setLoading(false);
     }
@@ -49,8 +75,7 @@ const Register = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-white dark:bg-gray-900">
-      <div className="w-full max-w-md bg-white dark:bg-gray-800 
-                      rounded-xl shadow-lg p-6 mt-8">
+      <div className="w-full max-w-md bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 mt-8">
         <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
           Create account
         </h2>
@@ -64,25 +89,73 @@ const Register = () => {
         )}
 
         <form onSubmit={handleRegister} className="space-y-3">
-          <input name="email" placeholder="Email" onChange={handleChange} required className="auth-input" />
+          <input
+            name="email"
+            placeholder="Email"
+            onChange={handleChange}
+            required
+            className="auth-input"
+          />
 
           <div className="grid grid-cols-2 gap-3">
-            <input name="firstName" placeholder="First name" onChange={handleChange} required className="auth-input" />
-            <input name="lastName" placeholder="Last name" onChange={handleChange} required className="auth-input" />
+            <input
+              name="firstName"
+              placeholder="First name"
+              onChange={handleChange}
+              required
+              className="auth-input"
+            />
+            <input
+              name="lastName"
+              placeholder="Last name"
+              onChange={handleChange}
+              required
+              className="auth-input"
+            />
           </div>
 
-          <input name="password" type="password" placeholder="Password" onChange={handleChange} required className="auth-input" />
+          <input
+            name="password"
+            type="password"
+            placeholder="Password"
+            onChange={handleChange}
+            required
+            className="auth-input"
+          />
 
-          <select name="role" onChange={handleChange} className="auth-input bg-white dark:bg-gray-700">
+          <select
+            name="role"
+            onChange={handleChange}
+            className="auth-input bg-white dark:bg-gray-700"
+          >
             <option value="patient">Patient</option>
             <option value="doctor">Doctor</option>
           </select>
 
-          <input name="city" placeholder="City" onChange={handleChange} required className="auth-input" />
-          <input name="pincode" placeholder="Pincode" onChange={handleChange} required className="auth-input" />
+          <input
+            name="city"
+            placeholder="City"
+            onChange={handleChange}
+            required
+            className="auth-input"
+          />
+
+          <input
+            name="pincode"
+            placeholder="Pincode"
+            onChange={handleChange}
+            required
+            className="auth-input"
+          />
 
           {formData.role === "doctor" && (
-            <input name="specialization" placeholder="Specialization" onChange={handleChange} required className="auth-input" />
+            <input
+              name="specialization"
+              placeholder="Specialization"
+              onChange={handleChange}
+              required
+              className="auth-input"
+            />
           )}
 
           <button
