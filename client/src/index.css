@@ -6,3 +6,8 @@
          focus:outline-none focus:ring focus:ring-blue-500
          dark:bg-gray-700 dark:text-white;
 }
+html,
+body {
+  background-color: #0a0a0a; /* matches bg-neutral-950 */
+  overscroll-behavior: none;
+}

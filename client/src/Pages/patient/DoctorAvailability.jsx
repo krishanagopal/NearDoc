@@ -9,7 +9,6 @@ const DoctorAvailability = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // selection state
   const [selectedDayId, setSelectedDayId] = useState(null);
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [bookingLoading, setBookingLoading] = useState(false);
@@ -48,8 +47,6 @@ const DoctorAvailability = () => {
       });
 
       alert("Appointment booked successfully!");
-
-      // reset selection
       setSelectedDayId(null);
       setSelectedSlot(null);
     } catch (err) {
@@ -65,73 +62,105 @@ const DoctorAvailability = () => {
     return <p className="p-6">No availability found.</p>;
 
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-semibold mb-6">
-        Doctor Availability
-      </h2>
+    <div className="relative min-h-screen overflow-hidden bg-neutral-950">
 
-      {availability.map((day) => (
-        <div
-          key={day._id}
-          className="mb-6 p-4 border rounded bg-white dark:bg-gray-800"
-        >
-          <p className="font-medium mb-3">
-            Date: {new Date(day.date).toDateString()}
-          </p>
+      {/* Landing-style background */}
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.06)_1px,transparent_1px)] bg-[size:72px_100%] opacity-20" />
+        <div className="absolute inset-0 bg-gradient-to-b from-neutral-950 via-transparent to-neutral-950" />
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 h-[420px] w-[420px] rounded-full bg-blue-400/25 blur-3xl" />
+      </div>
 
-          <div className="flex flex-wrap gap-2">
-            {day.slots.map((slot) => {
-              const isSelected =
-                selectedDayId === day._id &&
-                selectedSlot === slot;
+      {/* CONTENT */}
+      <div className="relative z-10 p-6">
+        <h2 className="text-2xl font-semibold mb-8 text-center text-blue-300">
+          Doctor Availability
+        </h2>
 
-              return (
-                <button
-                  key={slot}
-                  onClick={() => {
-                    setSelectedDayId(day._id);
-                    setSelectedSlot(slot);
-                  }}
-                  className={`px-3 py-1 rounded border text-sm transition
-                    ${
-                      isSelected
-                        ? "bg-blue-600 text-white"
-                        : "bg-gray-100 dark:bg-gray-700"
-                    }`}
-                >
-                  {slot}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      ))}
-
-      {selectedDayId && selectedSlot && (
-        <div className="mt-6 p-4 border rounded bg-gray-50 dark:bg-gray-800">
-          <p className="mb-3">
-            Selected:
-            <strong className="ml-2">
-              {new Date(
-                availability.find(
-                  (d) => d._id === selectedDayId
-                ).date
-              ).toDateString()}{" "}
-              at {selectedSlot}
-            </strong>
-          </p>
-
-          <button
-            onClick={handleBookAppointment}
-            disabled={bookingLoading}
-            className="px-6 py-2 bg-green-600 text-white rounded disabled:opacity-50"
+        {availability.map((day) => (
+          <div
+            key={day._id}
+            className="
+              mx-auto
+              mb-8
+              max-w-md
+              p-5
+              rounded-lg
+              bg-blue-0
+              backdrop-blur-lg
+            "
           >
-            {bookingLoading
-              ? "Booking..."
-              : "Book Appointment"}
-          </button>
-        </div>
-      )}
+            <p className="font-medium mb-4 text-blue-900 text-center">
+              {new Date(day.date).toDateString()}
+            </p>
+
+            <div className="flex flex-wrap justify-center gap-2">
+              {day.slots.map((slot) => {
+                const isSelected =
+                  selectedDayId === day._id &&
+                  selectedSlot === slot;
+
+                return (
+                  <button
+                    key={slot}
+                    onClick={() => {
+                      setSelectedDayId(day._id);
+                      setSelectedSlot(slot);
+                    }}
+                    className={`px-3 py-1 rounded text-sm transition
+                      ${
+                        isSelected
+                          ? "bg-blue-600 text-white"
+                          : "bg-white text-blue-700 border border-blue-200 hover:bg-blue-100"
+                      }`}
+                  >
+                    {slot}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+
+        {selectedDayId && selectedSlot && (
+          <div
+            className="
+              mx-auto
+              mt-10
+              max-w-md
+              p-5
+              rounded-lg
+           bg-neutral-900/10
+                backdrop-blur-lg
+                p-6
+                shadow-xl
+                transition
+                hover:bg-neutral-900/30
+              text-center
+            "
+          >
+            <p className="mb-4 text-blue-900">
+              Selected:
+              <strong className="ml-2">
+                {new Date(
+                  availability.find(
+                    (d) => d._id === selectedDayId
+                  ).date
+                ).toDateString()}{" "}
+                at {selectedSlot}
+              </strong>
+            </p>
+
+            <button
+              onClick={handleBookAppointment}
+              disabled={bookingLoading}
+              className="px-6 py-2 bg-blue-500 text-white rounded disabled:opacity-50"
+            >
+              {bookingLoading ? "Booking..." : "Book Appointment"}
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

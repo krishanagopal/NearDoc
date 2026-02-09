@@ -11,31 +11,65 @@ const DoctorNavbar = () => {
   };
 
   return (
-    <nav className="flex justify-between items-center px-6 py-4 border-b bg-white dark:bg-gray-950">
-      <div className="flex gap-6 items-center">
-        <Link to="/doctor/availability" className="text-blue-600">
-          Availability
-        </Link>
-        <Link to="/doctor/appointments" className="text-blue-600">
-          Appointments
-        </Link>
-      </div>
+    <nav className="relative z-50 mt-2">
+      <div
+        className="
+          mx-auto
+          flex
+          max-w-4xl
+          items-center
+          justify-between
+          rounded-full
+          bg-neutral-900/60
+          backdrop-blur-md
+          px-8
+          py-3
+          shadow-lg
+        "
+      >
+        {/* Left links */}
+        <div className="flex gap-6 items-center">
+          <Link
+            to="/doctor/availability"
+            className="text-sm font-medium text-neutral-300 hover:text-white transition"
+          >
+            Availability
+          </Link>
 
-      <div className="flex items-center gap-4">
-        <span className="text-sm text-gray-600 dark:text-gray-300">
-          {user?.name}
-        </span>
+          <Link
+            to="/doctor/appointments"
+            className="text-sm font-medium text-neutral-300 hover:text-white transition"
+          >
+            Appointments
+          </Link>
+        </div>
 
-        <button
-          onClick={handleLogout}
-          className="px-3 py-1 text-sm rounded bg-red-500 text-white hover:bg-red-600"
-        >
-          Logout
-        </button>
+        {/* Right actions */}
+        <div className="flex items-center gap-4">
+          <span className="text-sm text-neutral-400">
+            {user?.name}
+          </span>
+
+          <button
+            onClick={handleLogout}
+            className="
+              rounded-full
+              bg-red-500/90
+              px-4
+              py-1.5
+              text-sm font-medium text-white
+              transition
+              hover:bg-red-600
+            "
+          >
+            Logout
+          </button>
+        </div>
       </div>
     </nav>
   );
 };
 
 export default DoctorNavbar;
+
 

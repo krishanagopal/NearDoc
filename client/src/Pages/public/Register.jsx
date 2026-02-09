@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../api/axios";
@@ -35,7 +34,6 @@ const Register = () => {
     setLoading(true);
 
     try {
-      // 1️⃣ Register user
       await api.post("/auth/register", {
         name: `${formData.firstName} ${formData.lastName}`,
         email: formData.email,
@@ -49,16 +47,13 @@ const Register = () => {
             : undefined,
       });
 
-      // 2️⃣ Login immediately
       const loginRes = await api.post("/auth/login", {
         email: formData.email,
         password: formData.password,
       });
 
-      // 3️⃣ Update AuthContext
       await login(loginRes.data.token);
 
-      // 4️⃣ Redirect based on role
       if (formData.role === "patient") {
         navigate("/patient/doctors");
       } else {
@@ -74,27 +69,41 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white dark:bg-gray-900">
-      <div className="w-full max-w-md bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 mt-8">
-        <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+    <div className="relative min-h-screen  mt-10 flex items-center justify-center bg-neutral-950 px-4 overflow-hidden">
+
+      {/* Background lighting */}
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 h-[480px] w-[480px] rounded-full bg-blue-600/20 blur-3xl" />
+        <div className="absolute bottom-1/4 left-1/2 -translate-x-1/2 h-[360px] w-[360px] rounded-full bg-cyan-500/10 blur-3xl" />
+      </div>
+
+      {/* Transparent Register Card */}
+      <div className="relative z-10 w-full max-w-md rounded-2xl bg-neutral-900/40 backdrop-blur-lg p-8 shadow-2xl">
+        <h2 className="text-2xl font-semibold text-white mb-1">
           Create account
         </h2>
 
-        <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
+        <p className="text-sm text-neutral-300 mb-8">
           Enter your details to get started
         </p>
 
         {error && (
-          <p className="text-sm text-red-600 mb-4">{error}</p>
+          <p className="text-sm text-red-500 mb-4">{error}</p>
         )}
 
-        <form onSubmit={handleRegister} className="space-y-3">
+        <form onSubmit={handleRegister} className="space-y-4">
+
           <input
             name="email"
             placeholder="Email"
             onChange={handleChange}
             required
-            className="auth-input"
+            className="
+              w-full rounded-lg bg-neutral-950/60
+              px-4 py-2.5 text-sm text-white
+              placeholder-neutral-500
+              focus:outline-none focus:ring-1 focus:ring-blue-500
+            "
           />
 
           <div className="grid grid-cols-2 gap-3">
@@ -103,14 +112,24 @@ const Register = () => {
               placeholder="First name"
               onChange={handleChange}
               required
-              className="auth-input"
+              className="
+                w-full rounded-lg bg-neutral-950/60
+                px-4 py-2.5 text-sm text-white
+                placeholder-neutral-500
+                focus:outline-none focus:ring-1 focus:ring-blue-500
+              "
             />
             <input
               name="lastName"
               placeholder="Last name"
               onChange={handleChange}
               required
-              className="auth-input"
+              className="
+                w-full rounded-lg bg-neutral-950/60
+                px-4 py-2.5 text-sm text-white
+                placeholder-neutral-500
+                focus:outline-none focus:ring-1 focus:ring-blue-500
+              "
             />
           </div>
 
@@ -120,13 +139,22 @@ const Register = () => {
             placeholder="Password"
             onChange={handleChange}
             required
-            className="auth-input"
+            className="
+              w-full rounded-lg bg-neutral-950/60
+              px-4 py-2.5 text-sm text-white
+              placeholder-neutral-500
+              focus:outline-none focus:ring-1 focus:ring-blue-500
+            "
           />
 
           <select
             name="role"
             onChange={handleChange}
-            className="auth-input bg-white dark:bg-gray-700"
+            className="
+              w-full rounded-lg bg-neutral-950/60
+              px-4 py-2.5 text-sm text-white
+              focus:outline-none focus:ring-1 focus:ring-blue-500
+            "
           >
             <option value="patient">Patient</option>
             <option value="doctor">Doctor</option>
@@ -137,7 +165,12 @@ const Register = () => {
             placeholder="City"
             onChange={handleChange}
             required
-            className="auth-input"
+            className="
+              w-full rounded-lg bg-neutral-950/60
+              px-4 py-2.5 text-sm text-white
+              placeholder-neutral-500
+              focus:outline-none focus:ring-1 focus:ring-blue-500
+            "
           />
 
           <input
@@ -145,7 +178,12 @@ const Register = () => {
             placeholder="Pincode"
             onChange={handleChange}
             required
-            className="auth-input"
+            className="
+              w-full rounded-lg bg-neutral-950/60
+              px-4 py-2.5 text-sm text-white
+              placeholder-neutral-500
+              focus:outline-none focus:ring-1 focus:ring-blue-500
+            "
           />
 
           {formData.role === "doctor" && (
@@ -154,23 +192,32 @@ const Register = () => {
               placeholder="Specialization"
               onChange={handleChange}
               required
-              className="auth-input"
+              className="
+                w-full rounded-lg bg-neutral-950/60
+                px-4 py-2.5 text-sm text-white
+                placeholder-neutral-500
+                focus:outline-none focus:ring-1 focus:ring-blue-500
+              "
             />
           )}
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 hover:bg-blue-700
-                       text-white py-2 rounded-md disabled:opacity-50 mt-2"
+            className="
+              w-full rounded-lg bg-blue-600
+              py-2.5 text-sm font-medium text-white
+              transition hover:bg-blue-700
+              disabled:opacity-50 mt-2
+            "
           >
             {loading ? "Creating account..." : "Continue"}
           </button>
         </form>
 
-        <p className="text-sm text-center text-gray-600 dark:text-gray-400 mt-6">
+        <p className="mt-8 text-center text-sm text-neutral-300">
           Already have an account?{" "}
-          <a href="/login" className="text-blue-600 hover:underline">
+          <a href="/login" className="text-blue-400  bg-gradient-to-r from-blue-900 to-cyan-500hover:underline">
             Log in
           </a>
         </p>

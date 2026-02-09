@@ -5,7 +5,7 @@ import PublicNavbar from "../components/navbar/PublicNavbar";
 
 const PublicLayout = () => {
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900">
+    <div className="min-h-screen bg-neutral-950">
       <PublicNavbar />
       <Outlet />
     </div>
