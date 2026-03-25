@@ -11,42 +11,43 @@ const PatientNavbar = () => {
   };
 
   return (
-    <nav className="relative z-50 mt-2">
+    <nav className="relative z-50 pt-6 px-4 mb-4 flex justify-center">
       <div
         className="
-          mx-auto
-          flex
-          max-w-4xl
-          items-center
-          justify-between
+          flex items-center justify-between
+          w-full max-w-5xl
+          px-8 py-3
           rounded-full
-          bg-neutral-900/60
-          backdrop-blur-md
-          px-8
-          py-3
-          shadow-lg
+          liquid-glass shadow-xl
         "
       >
-        {/* Left links */}
-        <div className="flex gap-6 items-center">
-          <Link
-            to="/patient/doctors"
-            className="text-sm font-medium text-neutral-300 hover:text-white transition"
-          >
-            Doctors
+        {/* Brand */}
+        <div className="flex items-center gap-8">
+          <Link to="/" className="font-semibold text-xl tracking-tight text-white hover:opacity-80 transition" style={{ fontFamily: "'Instrument Serif', serif" }}>
+            Velorah<sup className="text-xs">®</sup>
           </Link>
+          
+          {/* Links */}
+          <div className="hidden sm:flex gap-6 items-center">
+            <Link
+              to="/patient/doctors"
+              className="text-sm font-medium text-neutral-300 hover:text-white transition"
+            >
+              Doctors
+            </Link>
 
-          <Link
-            to="/patient/appointments"
-            className="text-sm font-medium text-neutral-300 hover:text-white transition"
-          >
-            My Appointments
-          </Link>
+            <Link
+              to="/patient/appointments"
+              className="text-sm font-medium text-neutral-300 hover:text-white transition"
+            >
+              My Appointments
+            </Link>
+          </div>
         </div>
 
         {/* Right actions */}
-        <div className="flex items-center gap-4">
-          <span className="text-sm text-neutral-400">
+        <div className="flex items-center gap-6">
+          <span className="text-sm font-medium text-neutral-300 hidden sm:inline-block">
             {user?.name}
           </span>
 
@@ -54,12 +55,13 @@ const PatientNavbar = () => {
             onClick={handleLogout}
             className="
               rounded-full
-              bg-red-500/90
-              px-4
-              py-1.5
+              liquid-glass
+              border border-white/10
+              hover:bg-red-500/20 hover:border-red-500/50 hover:text-red-200
+              px-5
+              py-2
               text-sm font-medium text-white
-              transition
-              hover:bg-red-600
+              transition-all
             "
           >
             Logout

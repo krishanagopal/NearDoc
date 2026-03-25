@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import api from "../../api/axios";
 import { useAuth } from "../../context/AuthContext";
 
@@ -18,11 +18,7 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const res = await api.post("/auth/login", {
-        email,
-        password,
-      });
-
+      const res = await api.post("/auth/login", { email, password });
       await login(res.data.token);
     } catch (err) {
       setError(err.response?.data?.message || "Login failed");
@@ -33,7 +29,6 @@ const Login = () => {
 
   useEffect(() => {
     if (!user) return;
-
     if (user.role === "patient") {
       navigate("/patient/doctors");
     } else if (user.role === "doctor") {
@@ -42,134 +37,100 @@ const Login = () => {
   }, [user, navigate]);
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center bg-neutral-950 px-4 overflow-hidden">
+    <div className="relative min-h-screen w-full flex flex-col items-center justify-center bg-background p-4 sm:p-8 overflow-hidden font-body">
+      {/* Background Video */}
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="absolute inset-0 w-full h-full object-cover z-0 blur-xl opacity-30 scale-110 pointer-events-none"
+      >
+        <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260314_131748_f2ca2a28-fed7-44c8-b9a9-bd9acdd5ec31.mp4" type="video/mp4" />
+      </video>
+      <div className="absolute inset-0 z-0 bg-background/60 pointer-events-none" />
 
-      {/* Background lighting */}
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 h-[420px] w-[420px] rounded-full bg-blue-600/20 blur-3xl" />
-        <div className="absolute bottom-1/4 left-1/2 -translate-x-1/2 h-[320px] w-[320px] rounded-full bg-cyan-500/10 blur-3xl" />
-      </div>
-
-      {/* Transparent Login Card */}
-      <div className="relative z-10 w-full max-w-md rounded-2xl bg-neutral-900/40 backdrop-blur-lg p-8 shadow-2xl">
-        <h2 className="text-2xl font-semibold text-white mb-1">
-          Log in
-        </h2>
-
-        <p className="text-sm text-neutral-300 mb-8">
-          Enter your email and password to continue
-        </p>
-
-        {error && (
-          <p className="text-sm text-red-500 mb-4">{error}</p>
-        )}
-
-        <form onSubmit={handleLogin} className="space-y-6">
-
-          {/* Email */}
-          <div className="relative">
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              placeholder=" "
-              className="
-                peer
-                w-full
-                rounded-lg
-                bg-neutral-950/60
-                px-4 pt-5 pb-2
-                text-sm text-white
-                placeholder-transparent
-                focus:outline-none
-                focus:ring-1 focus:ring-blue-500
-              "
-            />
-            <label
-              className="
-                pointer-events-none
-                absolute left-4 top-3
-                text-sm text-neutral-400
-                transition-all
-                peer-placeholder-shown:top-4
-                peer-placeholder-shown:text-sm
-                peer-focus:top-1.5
-                peer-focus:text-xs
-                peer-focus:text-blue-400
-              "
+      {/* Main Split Card */}
+      <div className="relative z-10 w-full max-w-5xl liquid-glass rounded-[2rem] flex flex-col md:flex-row shadow-2xl md:p-2 animate-fade-rise border border-white/5">
+        
+        {/* Left Side (Form) */}
+        <div className="w-full md:w-1/2 p-8 sm:p-12 lg:p-16 flex flex-col justify-center">
+          <div className="mb-10 text-center md:text-left">
+            <span 
+              className="tracking-tight text-white font-normal text-3xl block mb-2"
+              style={{ fontFamily: "'Instrument Serif', serif" }}
             >
-              Email address
-            </label>
+              Velorah<sup className="text-xs">®</sup>
+            </span>
+            <h2 className="text-3xl font-medium text-white mb-2">Welcome back</h2>
+            <p className="text-sm text-muted-foreground">
+              Start your perfect journey. Enter your credentials.
+            </p>
           </div>
 
-          {/* Password */}
-          <div className="relative">
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              placeholder=" "
-              className="
-                peer
-                w-full
-                rounded-lg
-                bg-neutral-950/60
-                px-4 pt-5 pb-2
-                text-sm text-white
-                placeholder-transparent
-                focus:outline-none
-                focus:ring-1 focus:ring-blue-500
-              "
-            />
-            <label
-              className="
-                pointer-events-none
-                absolute left-4 top-3
-                text-sm text-neutral-400
-                transition-all
-                peer-placeholder-shown:top-4
-                peer-placeholder-shown:text-sm
-                peer-focus:top-1.5
-                peer-focus:text-xs
-                peer-focus:text-blue-400
-              "
-            >
-              Password
-            </label>
-          </div>
+          {error && (
+            <p className="text-xs text-red-400 mb-6 bg-red-400/10 p-3 rounded-xl border border-red-400/20 text-center md:text-left">{error}</p>
+          )}
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="
-              w-full
-              rounded-lg
-              bg-blue-600
-              py-2.5
-              text-sm font-medium text-white
-              transition
-              hover:bg-blue-700
-              disabled:opacity-50
-              bg-gradient-to-r from-blue-900 to-cyan-500
-            "
+          <form onSubmit={handleLogin} className="space-y-5">
+            <div className="space-y-1.5">
+              <label className="text-xs font-medium text-muted-foreground ml-1">Email</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                placeholder="name@example.com"
+                className="w-full rounded-2xl bg-white/5 border border-white/10 px-5 py-3.5 text-sm text-white placeholder:text-muted-foreground/30 focus:outline-none focus:ring-1 focus:ring-white/20 transition-all font-body"
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-medium text-muted-foreground ml-1">Password</label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                placeholder="••••••••"
+                className="w-full rounded-2xl bg-white/5 border border-white/10 px-5 py-3.5 text-sm text-white placeholder:text-muted-foreground/30 focus:outline-none focus:ring-1 focus:ring-white/20 transition-all font-body"
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full liquid-glass rounded-2xl py-3.5 text-sm font-medium text-white transition hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 mt-4 cursor-pointer"
+            >
+              {loading ? "Verifying..." : "Start"}
+            </button>
+          </form>
+
+          <p className="mt-8 text-center text-sm text-muted-foreground">
+            Don't have an account?{" "}
+            <Link to="/register" className="text-white hover:underline transition-all font-medium">
+              Register here
+            </Link>
+          </p>
+        </div>
+
+        {/* Right Side (Image/Video) */}
+        <div className="hidden md:block w-1/2 relative rounded-[1.5rem] overflow-hidden bg-black/20">
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover scale-105"
           >
-            {loading ? "Logging in..." : "Continue"}
-          </button>
-        </form>
+            <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260314_131748_f2ca2a28-fed7-44c8-b9a9-bd9acdd5ec31.mp4" type="video/mp4" />
+          </video>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
+        </div>
 
-        <p className="mt-8 text-center text-sm text-neutral-300">
-          New here?{" "}
-          <a href="/register" className="text-blue-400 hover:underline ">
-            Create an account
-          </a>
-        </p>
       </div>
     </div>
   );
 };
 
 export default Login;
-
-

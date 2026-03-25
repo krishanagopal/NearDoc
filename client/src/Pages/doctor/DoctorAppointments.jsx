@@ -34,68 +34,68 @@ const DoctorAppointments = () => {
   }
 
   return (
-    <div className="relative min-h-screen bg-neutral-950 px-6 py-10 overflow-hidden">
+    <div className="relative min-h-screen w-full bg-background p-6 font-body">
 
-      {/* Background lighting */}
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 h-[420px] w-[420px] rounded-full bg-blue-600/15 blur-3xl" />
-        <div className="absolute bottom-1/4 left-1/2 -translate-x-1/2 h-[300px] w-[300px] rounded-full bg-cyan-500/10 blur-3xl" />
+      {/* Video Background */}
+      <div className="fixed inset-0 w-full h-full z-0 bg-background pointer-events-none">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+        >
+          <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260314_131748_f2ca2a28-fed7-44c8-b9a9-bd9acdd5ec31.mp4" type="video/mp4" />
+        </video>
       </div>
 
-      <h2 className="relative z-10 text-2xl font-semibold text-white mb-8 text-center">
-        My Appointments
-      </h2>
+      {/* Content */}
+      <div className="relative z-10 max-w-5xl mx-auto pt-20">
+        <h2 
+          className="text-4xl md:text-5xl font-normal mb-12 text-center text-white animate-fade-rise"
+          style={{ fontFamily: "'Instrument Serif', serif" }}
+        >
+          Patient Appointments
+        </h2>
 
-      {/* Swipe container */}
-      <div
-        className="
-          relative z-10
-          flex
-          gap-8
-          overflow-x-auto
-          snap-x snap-mandatory
-          px-[10vw]
-          scrollbar-hide
-        "
-      >
-        {appointments.map((appt) => (
-          <div
-            key={appt._id}
-            className="
-              snap-center
-              shrink-0
-              w-full max-w-md
-              bg-neutral-900/40
-              backdrop-blur-lg
-              p-8
-              shadow-2xl
-              transition-transform duration-300
-            "
-          >
-            <h3 className="font-semibold text-lg text-white">
-              Patient: {appt.patient.name}
-            </h3>
+        {/* Vertical List instead of swipe container for desktop friendliness */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {appointments.map((appt) => (
+            <div
+              key={appt._id}
+              className="liquid-glass rounded-3xl p-8 flex flex-col items-start hover:-translate-y-2 transition-transform duration-500 border border-white/5 animate-fade-rise-delay"
+            >
+              <h3 className="font-medium text-2xl text-white mb-1">
+                {appt.patient.name}
+              </h3>
 
-            <p className="text-sm text-neutral-400">
-              City: {appt.patient.city}
-            </p>
+              <p className="text-sm text-neutral-300 mb-6 bg-white/5 px-3 py-1 rounded-full border border-white/10 mt-2">
+                📍 {appt.patient.city}
+              </p>
 
-            <p className="mt-4 text-sm text-neutral-300">
-              📅 {new Date(appt.date).toDateString()}
-            </p>
+              <div className="w-full space-y-3 bg-black/20 p-5 rounded-2xl border border-white/5 mb-4 mt-auto">
+                <p className="text-sm text-neutral-200 flex justify-between">
+                  <span className="opacity-60">Date</span>
+                  <span className="font-medium">{new Date(appt.date).toDateString()}</span>
+                </p>
+                <div className="h-px w-full bg-white/5" />
+                <p className="text-sm text-neutral-200 flex justify-between">
+                  <span className="opacity-60">Time</span>
+                  <span className="font-medium">{appt.timeSlot}</span>
+                </p>
+              </div>
 
-            <p className="text-sm text-neutral-300">
-              ⏰ {appt.timeSlot}
-            </p>
-
-            <p className="mt-4 text-sm text-neutral-300">
-              Status:{" "}
-              <span className="font-medium text-green-400">
-                {appt.status}
-              </span>
-            </p>
-          </div>
-        ))}
+              <div className="w-full rounded-2xl bg-white/5 py-3 text-center border border-white/10">
+                <p className="text-sm text-neutral-300">
+                  Status:{" "}
+                  <span className={`font-medium ${appt.status === 'confirmed' ? 'text-green-400' : 'text-amber-400'}`}>
+                    {appt.status.charAt(0).toUpperCase() + appt.status.slice(1)}
+                  </span>
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

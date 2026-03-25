@@ -34,56 +34,59 @@ const MyAppointments = () => {
   }
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-neutral-950 p-6">
+    <div className="relative min-h-screen w-full bg-background p-6 font-body">
 
-      {/* Landing-style background */}
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.06)_1px,transparent_1px)] bg-[size:72px_100%] opacity-20" />
-        <div className="absolute inset-0 bg-gradient-to-b from-neutral-950 via-transparent to-neutral-950" />
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 h-[420px] w-[420px] rounded-full bg-blue-500/20 blur-3xl" />
+      {/* Video Background */}
+      <div className="fixed inset-0 w-full h-full z-0 bg-background pointer-events-none">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+        >
+          <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260314_131748_f2ca2a28-fed7-44c8-b9a9-bd9acdd5ec31.mp4" type="video/mp4" />
+        </video>
       </div>
 
       {/* Content */}
-      <div className="relative z-10 max-w-4xl mx-auto">
-        <h2 className="text-2xl font-semibold mb-8 text-white text-center">
+      <div className="relative z-10 max-w-4xl mx-auto pt-20">
+        <h2 
+          className="text-4xl md:text-5xl font-normal mb-12 text-center text-white animate-fade-rise"
+          style={{ fontFamily: "'Instrument Serif', serif" }}
+        >
           My Appointments
         </h2>
 
-        <div className="space-y-6">
+        <div className="grid gap-6">
           {appointments.map((appt) => (
             <div
               key={appt._id}
-              className="
-                bg-neutral-900/10
-                backdrop-blur-lg
-                p-6
-                shadow-xl
-                transition
-                hover:bg-neutral-900/30
-              "
+              className="liquid-glass flex flex-col sm:flex-row justify-between items-start sm:items-center rounded-[2rem] p-8 hover:-translate-y-1 transition-transform duration-500 border border-white/5 animate-fade-rise-delay"
             >
-              <h3 className="font-semibold text-lg text-white">
-                Dr. {appt.doctor.name}
-              </h3>
+              <div>
+                <h3 className="font-medium text-2xl text-white mb-1">
+                  Dr. {appt.doctor.name}
+                </h3>
+                <p className="text-sm text-muted-foreground mb-4 sm:mb-0">
+                  {appt.doctor.specialization} <span className="mx-2 opacity-50">•</span> {appt.doctor.city}
+                </p>
+              </div>
 
-              <p className="mt-1 text-sm text-neutral-400">
-                {appt.doctor.specialization} · {appt.doctor.city}
-              </p>
-
-              <p className="mt-4 text-sm text-neutral-300">
-                📅 {new Date(appt.date).toDateString()}
-              </p>
-
-              <p className="text-sm text-neutral-300">
-                ⏰ {appt.timeSlot}
-              </p>
-
-              <p className="mt-4 text-sm text-neutral-300">
-                Status:{" "}
-                <span className="font-medium text-green-400">
-                  {appt.status}
-                </span>
-              </p>
+              <div className="flex flex-col sm:items-end gap-2 bg-black/20 p-4 rounded-2xl border border-white/5">
+                <p className="text-sm text-neutral-200">
+                  <span className="opacity-60 mr-2">📅</span> {new Date(appt.date).toDateString()}
+                </p>
+                <p className="text-sm text-neutral-200">
+                  <span className="opacity-60 mr-2">⏰</span> {appt.timeSlot}
+                </p>
+                <p className="text-sm text-neutral-200 mt-1">
+                  Status:{" "}
+                  <span className={`font-medium ${appt.status === 'confirmed' ? 'text-green-400' : 'text-amber-400'}`}>
+                    {appt.status.charAt(0).toUpperCase() + appt.status.slice(1)}
+                  </span>
+                </p>
+              </div>
             </div>
           ))}
         </div>

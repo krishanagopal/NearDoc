@@ -1,31 +1,23 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import api from "../../api/axios";
 import { useAuth } from "../../context/AuthContext";
 
 const Register = () => {
+  const { login, user } = useAuth();
   const navigate = useNavigate();
-  const { login } = useAuth();
 
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
+    name: "",
     email: "",
     password: "",
     role: "patient",
-    city: "",
-    pincode: "",
-    specialization: "",
   });
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleRegister = async (e) => {
@@ -34,193 +26,144 @@ const Register = () => {
     setLoading(true);
 
     try {
-      await api.post("/auth/register", {
-        name: `${formData.firstName} ${formData.lastName}`,
-        email: formData.email,
-        password: formData.password,
-        role: formData.role,
-        city: formData.city,
-        pincode: formData.pincode,
-        specialization:
-          formData.role === "doctor"
-            ? formData.specialization
-            : undefined,
-      });
-
-      const loginRes = await api.post("/auth/login", {
-        email: formData.email,
-        password: formData.password,
-      });
-
-      await login(loginRes.data.token);
-
-      if (formData.role === "patient") {
-        navigate("/patient/doctors");
-      } else {
-        navigate("/doctor/availability");
-      }
+      const res = await api.post("/auth/register", formData);
+      await login(res.data.token);
     } catch (err) {
-      setError(
-        err.response?.data?.message || "Registration failed"
-      );
+      setError(err.response?.data?.message || "Registration failed");
     } finally {
       setLoading(false);
     }
   };
 
+  useEffect(() => {
+    if (!user) return;
+    if (user.role === "patient") {
+      navigate("/patient/doctors");
+    } else if (user.role === "doctor") {
+      navigate("/doctor/availability");
+    }
+  }, [user, navigate]);
+
   return (
-    <div className="relative min-h-screen  mt-10 flex items-center justify-center bg-neutral-950 px-4 overflow-hidden">
+    <div className="relative min-h-screen w-full flex flex-col items-center justify-center bg-background p-4 sm:p-8 overflow-hidden font-body">
+      {/* Background Video */}
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="absolute inset-0 w-full h-full object-cover z-0 blur-xl opacity-30 scale-110 pointer-events-none"
+      >
+        <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260314_131748_f2ca2a28-fed7-44c8-b9a9-bd9acdd5ec31.mp4" type="video/mp4" />
+      </video>
+      <div className="absolute inset-0 z-0 bg-background/60 pointer-events-none" />
 
-      {/* Background lighting */}
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 h-[480px] w-[480px] rounded-full bg-blue-600/20 blur-3xl" />
-        <div className="absolute bottom-1/4 left-1/2 -translate-x-1/2 h-[360px] w-[360px] rounded-full bg-cyan-500/10 blur-3xl" />
-      </div>
-
-      {/* Transparent Register Card */}
-      <div className="relative z-10 w-full max-w-md rounded-2xl bg-neutral-900/40 backdrop-blur-lg p-8 shadow-2xl">
-        <h2 className="text-2xl font-semibold text-white mb-1">
-          Create account
-        </h2>
-
-        <p className="text-sm text-neutral-300 mb-8">
-          Enter your details to get started
-        </p>
-
-        {error && (
-          <p className="text-sm text-red-500 mb-4">{error}</p>
-        )}
-
-        <form onSubmit={handleRegister} className="space-y-4">
-
-          <input
-            name="email"
-            placeholder="Email"
-            onChange={handleChange}
-            required
-            className="
-              w-full rounded-lg bg-neutral-950/60
-              px-4 py-2.5 text-sm text-white
-              placeholder-neutral-500
-              focus:outline-none focus:ring-1 focus:ring-blue-500
-            "
-          />
-
-          <div className="grid grid-cols-2 gap-3">
-            <input
-              name="firstName"
-              placeholder="First name"
-              onChange={handleChange}
-              required
-              className="
-                w-full rounded-lg bg-neutral-950/60
-                px-4 py-2.5 text-sm text-white
-                placeholder-neutral-500
-                focus:outline-none focus:ring-1 focus:ring-blue-500
-              "
-            />
-            <input
-              name="lastName"
-              placeholder="Last name"
-              onChange={handleChange}
-              required
-              className="
-                w-full rounded-lg bg-neutral-950/60
-                px-4 py-2.5 text-sm text-white
-                placeholder-neutral-500
-                focus:outline-none focus:ring-1 focus:ring-blue-500
-              "
-            />
+      {/* Main Split Card */}
+      <div className="relative z-10 w-full max-w-5xl liquid-glass rounded-[2rem] flex flex-col md:flex-row shadow-2xl md:p-2 animate-fade-rise border border-white/5">
+        
+        {/* Left Side (Form) */}
+        <div className="w-full md:w-1/2 p-6 sm:p-10 lg:p-12 flex flex-col justify-center">
+          <div className="mb-6 text-center md:text-left">
+            <span 
+              className="tracking-tight text-white font-normal text-2xl block mb-1"
+              style={{ fontFamily: "'Instrument Serif', serif" }}
+            >
+              Velorah<sup className="text-[10px]">®</sup>
+            </span>
+            <h2 className="text-2xl font-medium text-white mb-1">Create Account</h2>
+            <p className="text-sm text-muted-foreground">
+              Start your perfect journey.
+            </p>
           </div>
 
-          <input
-            name="password"
-            type="password"
-            placeholder="Password"
-            onChange={handleChange}
-            required
-            className="
-              w-full rounded-lg bg-neutral-950/60
-              px-4 py-2.5 text-sm text-white
-              placeholder-neutral-500
-              focus:outline-none focus:ring-1 focus:ring-blue-500
-            "
-          />
-
-          <select
-            name="role"
-            onChange={handleChange}
-            className="
-              w-full rounded-lg bg-neutral-950/60
-              px-4 py-2.5 text-sm text-white
-              focus:outline-none focus:ring-1 focus:ring-blue-500
-            "
-          >
-            <option value="patient">Patient</option>
-            <option value="doctor">Doctor</option>
-          </select>
-
-          <input
-            name="city"
-            placeholder="City"
-            onChange={handleChange}
-            required
-            className="
-              w-full rounded-lg bg-neutral-950/60
-              px-4 py-2.5 text-sm text-white
-              placeholder-neutral-500
-              focus:outline-none focus:ring-1 focus:ring-blue-500
-            "
-          />
-
-          <input
-            name="pincode"
-            placeholder="Pincode"
-            onChange={handleChange}
-            required
-            className="
-              w-full rounded-lg bg-neutral-950/60
-              px-4 py-2.5 text-sm text-white
-              placeholder-neutral-500
-              focus:outline-none focus:ring-1 focus:ring-blue-500
-            "
-          />
-
-          {formData.role === "doctor" && (
-            <input
-              name="specialization"
-              placeholder="Specialization"
-              onChange={handleChange}
-              required
-              className="
-                w-full rounded-lg bg-neutral-950/60
-                px-4 py-2.5 text-sm text-white
-                placeholder-neutral-500
-                focus:outline-none focus:ring-1 focus:ring-blue-500
-              "
-            />
+          {error && (
+            <p className="text-xs text-red-400 mb-4 bg-red-400/10 p-2.5 rounded-xl border border-red-400/20 text-center md:text-left">{error}</p>
           )}
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="
-              w-full rounded-lg bg-blue-600
-              py-2.5 text-sm font-medium text-white
-              transition hover:bg-blue-700
-              disabled:opacity-50 mt-2
-            "
-          >
-            {loading ? "Creating account..." : "Continue"}
-          </button>
-        </form>
+          <form onSubmit={handleRegister} className="space-y-3">
+            <div className="space-y-1">
+              <label className="text-xs font-medium text-muted-foreground ml-1">Full Name</label>
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                required
+                placeholder="John Doe"
+                className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-2.5 text-sm text-white placeholder:text-muted-foreground/30 focus:outline-none focus:ring-1 focus:ring-white/20 transition-all font-body"
+              />
+            </div>
 
-        <p className="mt-8 text-center text-sm text-neutral-300">
-          Already have an account?{" "}
-          <a href="/login" className="text-blue-400  bg-gradient-to-r from-blue-900 to-cyan-500hover:underline">
-            Log in
-          </a>
-        </p>
+            <div className="space-y-1">
+              <label className="text-xs font-medium text-muted-foreground ml-1">Email</label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                placeholder="name@example.com"
+                className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-2.5 text-sm text-white placeholder:text-muted-foreground/30 focus:outline-none focus:ring-1 focus:ring-white/20 transition-all font-body"
+              />
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-xs font-medium text-muted-foreground ml-1">Password</label>
+              <input
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+                placeholder="••••••••"
+                className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-2.5 text-sm text-white placeholder:text-muted-foreground/30 focus:outline-none focus:ring-1 focus:ring-white/20 transition-all font-body"
+              />
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-xs font-medium text-muted-foreground ml-1">I am a...</label>
+              <select
+                name="role"
+                value={formData.role}
+                onChange={handleChange}
+                className="w-full rounded-xl bg-neutral-950 border border-white/10 px-4 py-2.5 text-sm text-white focus:outline-none focus:ring-1 focus:ring-white/20 transition-all font-body appearance-none cursor-pointer"
+              >
+                <option value="patient">Patient</option>
+                <option value="doctor">Doctor</option>
+              </select>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full liquid-glass rounded-xl py-3 text-sm font-medium text-white transition hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 mt-3 cursor-pointer"
+            >
+              {loading ? "Creating account..." : "Start"}
+            </button>
+          </form>
+
+          <p className="mt-5 text-center text-sm text-muted-foreground">
+            Already have an account?{" "}
+            <Link to="/login" className="text-white hover:underline transition-all font-medium">
+              Log in
+            </Link>
+          </p>
+        </div>
+
+        {/* Right Side (Image/Video) */}
+        <div className="hidden md:block w-1/2 relative rounded-[1.5rem] overflow-hidden bg-black/20">
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover scale-105"
+          >
+            <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260314_131748_f2ca2a28-fed7-44c8-b9a9-bd9acdd5ec31.mp4" type="video/mp4" />
+          </video>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
+        </div>
+
       </div>
     </div>
   );

@@ -36,58 +36,53 @@ const DoctorList = () => {
   }
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-neutral-950 p-6">
+    <div className="relative min-h-screen w-full bg-background p-6 font-body">
 
-      {/* Landing-style background */}
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.06)_1px,transparent_1px)] bg-[size:72px_100%] opacity-20" />
-        <div className="absolute inset-0 bg-gradient-to-b from-neutral-950 via-transparent to-neutral-950" />
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 h-[420px] w-[420px] rounded-full bg-blue-500/20 blur-3xl" />
+      {/* Video Background */}
+      <div className="fixed inset-0 w-full h-full z-0 bg-background pointer-events-none">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+        >
+          <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260314_131748_f2ca2a28-fed7-44c8-b9a9-bd9acdd5ec31.mp4" type="video/mp4" />
+        </video>
       </div>
 
       {/* Content */}
-      <div className="relative z-10 max-w-6xl mx-auto">
-        <h2 className="text-2xl font-semibold mb-8 text-white text-center">
+      <div className="relative z-10 max-w-6xl mx-auto pt-20">
+        <h2 
+          className="text-4xl md:text-5xl font-normal mb-12 text-center text-white animate-fade-rise"
+          style={{ fontFamily: "'Instrument Serif', serif" }}
+        >
           Choose a Doctor
         </h2>
 
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {doctors.map((doctor) => (
             <div
               key={doctor._id}
-              className="
-                bg-neutral-900/10
-                backdrop-blur-lg
-                p-6
-                shadow-xl
-                transition
-                hover:bg-neutral-900/30
-              "
+              className="liquid-glass rounded-3xl p-8 flex flex-col items-start hover:-translate-y-2 transition-transform duration-500 border border-white/5 animate-fade-rise-delay"
             >
-              <h3 className="text-lg font-semibold text-white">
+              <h3 className="text-2xl font-medium mb-1 text-white">
                 Dr. {doctor.name}
               </h3>
 
-              <p className="mt-1 text-sm text-neutral-400">
+              <p className="text-sm text-muted-foreground mb-4">
                 {doctor.specialization}
               </p>
 
-              <p className="mt-1 text-sm text-neutral-300">
-                City: {doctor.city}
+              <p className="text-sm text-neutral-300 mb-6 bg-white/5 px-3 py-1 rounded-full border border-white/10">
+                📍 {doctor.city}
               </p>
 
               <button
                 onClick={() =>
                   navigate(`/patient/doctor/${doctor._id}`)
                 }
-                className="
-                  mt-5
-                  rounded-lg
-                  bg-blue-600
-                  px-4 py-2
-                  text-sm font-medium text-white
-                  transition hover:bg-blue-700
-                "
+                className="w-full liquid-glass rounded-2xl py-3 text-sm font-medium text-white transition hover:scale-[1.02] active:scale-[0.98] mt-auto"
               >
                 View Availability
               </button>
